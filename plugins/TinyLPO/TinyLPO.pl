@@ -4,7 +4,7 @@ my $DESCRIPTION = <<'PERLHEREDOC';
 #           Original Code by delab - http://de-lab.com/article/mt-searchkeyword-lpo/
 #           Programmed by Piroli YUKARINOMIYA
 #           Open MagicVox.net - http://www.magicvox.net/
-#           @see http://www.magicvox.net/
+#           @see http://www.magicvox.net/archive/2008/10061124/
 PERLHEREDOC
 
 use strict;
@@ -12,7 +12,7 @@ use MT::Template::Context;
 
 use vars qw( $MYNAME $VERSION );
 $MYNAME = 'TinyLPO';
-$VERSION = '0.01 DEVEL';
+$VERSION = '0.02';
 
 ### Register a plugin
 use base qw( MT::Plugin );
@@ -59,7 +59,7 @@ function get_query_keyword() {
     } elseif( strpos( $linkurl, ".yahoo." )) {
         $str = eregi_replace( ".+[\?&]p=([^&]+).*", "\\1", $linkurl );
         $str = urldecode( $str );
-        $str = mb_convert_encoding( $str, CHARACTERSET, "EUC-JP" );
+        $str = mb_convert_encoding( $str, CHARACTERSET, "UTF-8" );
     } elseif( strpos( $linkurl, ".msn." )) {
         $str = eregi_replace( ".+[\?&]q=([^&]+).*", "\\1", $linkurl );
         $str = urldecode( $str );
