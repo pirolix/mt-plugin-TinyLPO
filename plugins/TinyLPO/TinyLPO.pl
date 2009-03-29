@@ -79,7 +79,7 @@ PHPSOURCECODE
 ### $MTSearchEngineQuery$
 MT::Template::Context->add_tag( SearchEngineQuery => \&search_engine_query );
 sub search_engine_query {
-    '<?php echo $tiny_lpo_key; ?>';
+    '<?php echo urlencode ($tiny_lpo_key); ?>';
 }
 
 1;
