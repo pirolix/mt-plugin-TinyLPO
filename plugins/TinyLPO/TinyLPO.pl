@@ -51,24 +51,21 @@ function get_query_keyword() {
     if( strpos( $linkurl, ".google." )) {
         $str = eregi_replace( ".+[\?&]q=([^&]+).*", "\\1", $linkurl );
         $str = urldecode( $str );
-        $str = mb_convert_encoding( $str, CHARACTERSET, "UTF-8" );
     } elseif( strpos( $linkurl, ".goo." )) {
         $str = eregi_replace( ".+[\?&]MT=([^&]+).*", "\\1", $linkurl );
         $str = urldecode( $str );
-        $str = mb_convert_encoding( $str, CHARACTERSET, "EUC-JP" );
     } elseif( strpos( $linkurl, ".yahoo." )) {
         $str = eregi_replace( ".+[\?&]p=([^&]+).*", "\\1", $linkurl );
         $str = urldecode( $str );
-        $str = mb_convert_encoding( $str, CHARACTERSET, "UTF-8" );
     } elseif( strpos( $linkurl, ".msn." )) {
         $str = eregi_replace( ".+[\?&]q=([^&]+).*", "\\1", $linkurl );
         $str = urldecode( $str );
-        $str = mb_convert_encoding( $str, CHARACTERSET, "UTF-8" );
     }
+    $str = mb_convert_encoding( $str, CHARACTERSET, "UTF-8" );
     return mb_convert_kana( $str, "s" );
 }
 $tiny_lpo_key = get_query_keyword();
-if( $tiny_lpo_key != "" ) {
+if( $tiny_lpo_key !== "" ) {
 PHPSOURCECODE
 
     my $builder = $ctx->stash ('builder');
