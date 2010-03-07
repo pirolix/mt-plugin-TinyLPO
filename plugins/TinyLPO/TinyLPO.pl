@@ -8,11 +8,12 @@ my $DESCRIPTION = <<'PERLHEREDOC';
 PERLHEREDOC
 
 use strict;
+use MT 3;
 use MT::Template::Context;
 
 use vars qw( $MYNAME $VERSION );
 $MYNAME = 'TinyLPO';
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 ### Register a plugin
 use base qw( MT::Plugin );
@@ -21,7 +22,7 @@ my $plugin = new MT::Plugin({
         version => $VERSION,
         author_name => 'Piroli YUKARINOMIYA',
         author_link => "http://www.magicvox.net/?$MYNAME",
-        doc_link => "http://www.magicvox.net/?$MYNAME",
+        doc_link => "http://www.magicvox.net/archive/2008/10061124/",
         description => <<HTMLHEREDOC,
 Original Code by delab - http://de-lab.com/article/mt-searchkeyword-lpo/
 HTMLHEREDOC
@@ -45,27 +46,34 @@ $DESCRIPTION
 PHPSOURCECODE
 
     $php .= <<'PHPSOURCECODE';
-define( "CHARACTERSET", "UTF-8" );
-function get_query_keyword() {
+define ("CHARACTERSET", "UTF-8");
+function get_query_keyword () {
     $linkurl = $_SERVER['HTTP_REFERER'];
-    if( strpos( $linkurl, ".google." )) {
-        $str = eregi_replace( ".+[\?&]q=([^&]+).*", "\\1", $linkurl );
-        $str = urldecode( $str );
-    } elseif( strpos( $linkurl, ".goo." )) {
-        $str = eregi_replace( ".+[\?&]MT=([^&]+).*", "\\1", $linkurl );
-        $str = urldecode( $str );
-    } elseif( strpos( $linkurl, ".yahoo." )) {
-        $str = eregi_replace( ".+[\?&]p=([^&]+).*", "\\1", $linkurl );
-        $str = urldecode( $str );
-    } elseif( strpos( $linkurl, ".msn." )) {
-        $str = eregi_replace( ".+[\?&]q=([^&]+).*", "\\1", $linkurl );
-        $str = urldecode( $str );
+    $str = '';
+    if (strpos ($linkurl, ".google.")) {
+        $str = eregi_replace (".+[\?&]q=([^&]+).*", "\\1", $linkurl);
+        $str = urldecode ($str);
+        $str = mb_convert_encoding ($str, CHARACTERSET, "UTF-8");
     }
-    $str = mb_convert_encoding( $str, CHARACTERSET, "UTF-8" );
-    return mb_convert_kana( $str, "s" );
+    elseif (strpos ($linkurl, ".yahoo.")) {
+        $str = eregi_replace (".+[\?&]p=([^&]+).*", "\\1", $linkurl);
+        $str = urldecode ($str);
+        $str = mb_convert_encoding ($str, CHARACTERSET, "UTF-8");
+    }
+    elseif (strpos ($linkurl, ".bing.")) {
+        $str = eregi_replace (".+[\?&]q=([^&]+).*", "\\1", $linkurl);
+        $str = urldecode ($str);
+        $str = mb_convert_encoding ($str, CHARACTERSET, "UTF-8");
+    }
+    elseif (strpos ($linkurl, ".goo.")) {
+        $str = eregi_replace (".+[\?&]MT=([^&]+).*", "\\1", $linkurl);
+        $str = urldecode ($str);
+        $str = mb_convert_encoding ($str, CHARACTERSET, "EUC-JP");
+    }
+    return mb_convert_kana ($str, "s");
 }
-$tiny_lpo_key = get_query_keyword();
-if( $tiny_lpo_key !== "" ) {
+$tiny_lpo_key = get_query_keyword ();
+if ($tiny_lpo_key !== "") {
 PHPSOURCECODE
 
     my $builder = $ctx->stash ('builder');
