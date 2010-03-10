@@ -13,7 +13,7 @@ use MT::Template::Context;
 
 use vars qw( $MYNAME $VERSION );
 $MYNAME = 'TinyLPO';
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 ### Register a plugin
 use base qw( MT::Plugin );
@@ -36,36 +36,48 @@ sub instance { $plugin; }
 ### MTIfTinyLPO
 MT::Template::Context->add_container_tag( IfTinyLPO => \&if_tiny_lpo );
 sub if_tiny_lpo {
-    my ( $ctx, $args, $cond ) = @_;
+    my ($ctx, $args, $cond) = @_;
+
+    my $charset = {
+        'iso-8859-1' => 'ASCII',
+        'iso-2022-jp' => 'JIS',
+        'utf-8' => 'UTF-8',
+        'euc-jp' => 'EUC-JP',
+        'shift_jis' => 'SJIS',
+    }->{lc MT->instance->config->PublishCharset} || 'UTF-8';
 
     # Generate PHP codes
     my $php = <<"PHPSOURCECODE";
 /************************************************************************
 $DESCRIPTION
 */
+define ("CHARACTERSET", "$charset");
 PHPSOURCECODE
 
     $php .= <<'PHPSOURCECODE';
-define ("CHARACTERSET", "UTF-8");
+function get_domain ($url) {
+    return preg_replace ('/^https?:\/\/([^\/]+).+/', '$1', $url);
+}
+
 function get_query_keyword () {
     $linkurl = $_SERVER['HTTP_REFERER'];
     $str = '';
-    if (strpos ($linkurl, ".google.")) {
+    if (strpos (get_domain ($linkurl), ".google.")) {
         $str = eregi_replace (".+[\?&]q=([^&]+).*", "\\1", $linkurl);
         $str = urldecode ($str);
         $str = mb_convert_encoding ($str, CHARACTERSET, "UTF-8");
     }
-    elseif (strpos ($linkurl, ".yahoo.")) {
+    elseif (strpos (get_domain ($linkurl), ".yahoo.")) {
         $str = eregi_replace (".+[\?&]p=([^&]+).*", "\\1", $linkurl);
         $str = urldecode ($str);
         $str = mb_convert_encoding ($str, CHARACTERSET, "UTF-8");
     }
-    elseif (strpos ($linkurl, ".bing.")) {
+    elseif (strpos (get_domain ($linkurl), ".bing.")) {
         $str = eregi_replace (".+[\?&]q=([^&]+).*", "\\1", $linkurl);
         $str = urldecode ($str);
         $str = mb_convert_encoding ($str, CHARACTERSET, "UTF-8");
     }
-    elseif (strpos ($linkurl, ".goo.")) {
+    elseif (strpos (get_domain ($linkurl), ".goo.")) {
         $str = eregi_replace (".+[\?&]MT=([^&]+).*", "\\1", $linkurl);
         $str = urldecode ($str);
         $str = mb_convert_encoding ($str, CHARACTERSET, "EUC-JP");
