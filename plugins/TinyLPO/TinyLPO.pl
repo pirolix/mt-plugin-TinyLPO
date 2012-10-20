@@ -5,15 +5,17 @@ my $DESCRIPTION = <<'PERLHEREDOC';
 #           Programmed by Piroli YUKARINOMIYA
 #           Open MagicVox.net - http://www.magicvox.net/
 #           @see http://www.magicvox.net/archive/2008/10061124/
+#   $Id$
 PERLHEREDOC
 
 use strict;
 use MT 3;
 use MT::Template::Context;
 
-use vars qw( $MYNAME $VERSION );
-$MYNAME = 'TinyLPO';
-$VERSION = '0.04';
+use vars qw( $VENDOR $MYNAME $VERSION );
+($VENDOR, $MYNAME) = (split /::/, __PACKAGE__)[-2, -1];
+(my $revision = '$Rev$') =~ s/\D//g;
+$VERSION = '0.04'. ($revision ? ".$revision" : '');
 
 ### Register a plugin
 use base qw( MT::Plugin );
